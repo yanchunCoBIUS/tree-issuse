@@ -46,6 +46,7 @@ def remove_false_repeat_node(result, mixed_grey_black):
                 for ele in i.children:
                     remove_list.append(ele)
                     result.remove(ele)
+                    # remove_repeat: 4号, 5号
                     if not ele.is_leaf():
                         if all(n in result for n in ele.children):
                             for n in ele.children:
@@ -57,16 +58,16 @@ def remove_false_repeat_node(result, mixed_grey_black):
 def remove_repeat_leaf(result, remove_list):
     #leaf
     # print(remove_list)
-    for i in result:
-        if i.is_leaf():
-            for elem in remove_list:
-                # print(elem)
-                if elem.is_leaf():
-                    if elem in result:
-                        result.remove(elem)
-                else:
-                    if i in elem.children:
-                        result.remove(i)
+    for elem in remove_list:
+        if elem.is_leaf():
+            if elem in result:
+                result.remove(elem)
+    # for i in result:
+    #     if i.is_leaf():
+    #         for elem in remove_list:
+    #             if not elem.is_leaf():
+    #                 if i in elem.children:
+    #                     result.remove(i)
     return result
 
 
