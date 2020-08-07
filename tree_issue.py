@@ -31,17 +31,20 @@ def remove_mixed_grey_black(_12_grey_node_or_leaf, result):
     return result, remove_list
 
 
-def remove_false_node(result, remove_list):
+def remove_false_repeat_node(result, remove_list):
     """
-    剔除掉9号: 
+    剔除掉9号, 10号, 6号: 
     """
     for i in result:
         # Node
         if not i.is_leaf():
+            # remove_false: 9号
             if any(elem in remove_list for elem in i.children):
                 result.remove(i)
-            # if all(elem in result for elem in i.children):
-            #     result.remove(i)
+            # remove_false: 10号, 6号
+            if all(elem in result for elem in i.children):
+                for ele in i.children:
+                    result.remove(ele)
     return result
 
 
@@ -55,7 +58,7 @@ def main():
     # print("\n---------------\n")
 
     result, remove_list = remove_mixed_grey_black(_12_grey_node_or_leaf, result)  
-    result = remove_false_node(result, remove_list)      
+    result = remove_false_repeat_node(result, remove_list)     
 
     print("result")
     for i in result:
