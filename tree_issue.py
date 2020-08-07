@@ -12,13 +12,12 @@ def remove_mixed_grey_black(_12_grey_node_or_leaf, result):
     """
     剔除掉7号 8号 12号: 混合黑色和灰色节点
     """
-    remove_list = []
+    mixed_grey_black = []
     for i in _12_grey_node_or_leaf:
         #leaf
         if i.is_leaf():
             # 先把所有的leaf:1 2 3 4 5 6 都装进去
-            result.append(i)
-        
+            result.append(i)        
         # Node
         else:
             # 看node 的所有children是否都是灰色
@@ -27,24 +26,47 @@ def remove_mixed_grey_black(_12_grey_node_or_leaf, result):
             if all(elem in _12_grey_node_or_leaf for elem in i.children):
                 result.append(i)
             else:
-                remove_list.append(i)
-    return result, remove_list
+                mixed_grey_black.append(i)
+    return result, mixed_grey_black
 
 
-def remove_false_repeat_node(result, remove_list):
+def remove_false_repeat_node(result, mixed_grey_black):
     """
     剔除掉9号, 10号, 6号: 
     """
+    remove_list = []
     for i in result:
         # Node
         if not i.is_leaf():
             # remove_false: 9号
-            if any(elem in remove_list for elem in i.children):
+            if any(elem in mixed_grey_black for elem in i.children):
                 result.remove(i)
-            # remove_false: 10号, 6号
+            # remove_repeat: 10号, 6号
             if all(elem in result for elem in i.children):
                 for ele in i.children:
+                    remove_list.append(ele)
                     result.remove(ele)
+                    if not ele.is_leaf():
+                        if all(n in result for n in ele.children):
+                            for n in ele.children:
+                                remove_list.append(n)
+                                result.remove(n) 
+    return result, remove_list
+
+
+def remove_repeat_leaf(result, remove_list):
+    #leaf
+    # print(remove_list)
+    for i in result:
+        if i.is_leaf():
+            for elem in remove_list:
+                # print(elem)
+                if elem.is_leaf():
+                    if elem in result:
+                        result.remove(elem)
+                else:
+                    if i in elem.children:
+                        result.remove(i)
     return result
 
 
@@ -57,10 +79,12 @@ def main():
     #     print(i)
     # print("\n---------------\n")
 
-    result, remove_list = remove_mixed_grey_black(_12_grey_node_or_leaf, result)  
-    result = remove_false_repeat_node(result, remove_list)     
+    result, mixed_grey_black = remove_mixed_grey_black(_12_grey_node_or_leaf, result)
+    result, remove_list = remove_false_repeat_node(result, mixed_grey_black)     
+    result = remove_repeat_leaf(result, remove_list)
 
-    print("result")
+    print("\nresult\n")
+    # print(result)
     for i in result:
         print(i)
 
